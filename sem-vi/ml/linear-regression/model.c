@@ -17,9 +17,9 @@ LinearRegression lreg_statistic(Dataset *ds)
 		x += curr->x;
 		y += curr->y;
 		xy += curr->x * curr->y;
-		x_sq = curr->x * curr->x;
+		x_sq += curr->x * curr->x;
 	}
-	a = (y * x_sq - y * xy) / (n * x_sq - x * x);
+	a = (y * x_sq - x * xy) / (n * x_sq - x * x);
 	b = (n * xy - x * y) / (n * x_sq - x * x);
 	model.a = a;
 	model.b = b;
@@ -51,4 +51,18 @@ void lreg_test(LinearRegression *model, Dataset *test)
 	rms /= n;
 	rms = sqrt(rms);
 	printf("RMS Error = %f\n", rms);
+}
+
+void lreg_save_json(LinearRegression *model, const char *path)
+{
+	FILE *fp;
+
+	fp = fopen(path, "w");
+	if (!fp) {
+		fprintf(stderr, "failed to open \"%s\" for saving model\n", path);
+		exit(EXIT_FAILURE);
+	}
+	fprintf(fp, "{\"a\":%f,\"b\":%f}\n", model->a, model->b);
+	fflush(fp);
+	fclose(fp);
 }

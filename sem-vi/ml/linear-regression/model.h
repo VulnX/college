@@ -16,5 +16,6 @@ typedef struct {
 LinearRegression lreg_statistic(Dataset *ds);
 float lreg_predict(LinearRegression *model, float x);
 void lreg_test(LinearRegression *model, Dataset *test);
+void lreg_save_json(LinearRegression *model, const char *path);
 
 #endif // !MODEL_H
