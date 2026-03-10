@@ -1,0 +1,6 @@
+[raspberries]
+127.0.0.1
+
+[raspberries:vars]
+ansible_connection=local
+ansible_user=root

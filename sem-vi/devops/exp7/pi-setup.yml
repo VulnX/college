@@ -1,0 +1,40 @@
+- hosts: raspberries
+  become: yes
+
+  vars:
+    users:
+      - name: "pi"
+        password: "raspberry"
+        ssh_key: "ssh-rsa AAAA..."
+
+    packages:
+      - vim
+      - wget
+      - curl
+      - htop
+
+  tasks:
+
+    - name: Ensure user exists and set password
+      user:
+        name: "{{ item.name }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        state: present
+      loop: "{{ users }}"
+
+    - name: Add SSH public key
+      authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.ssh_key }}"
+        state: present
+      loop: "{{ users }}"
+
+    - name: Install required packages on Arch
+      pacman:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+
+    - name: All done
+      debug:
+        msg: "Packages have been successfully installed on Arch"
